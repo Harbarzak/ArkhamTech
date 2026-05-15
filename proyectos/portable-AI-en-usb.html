@@ -1,0 +1,1878 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portable AI USB - Asistente de IA Local que se ejecuta desde tu USB</title>
+    <meta name="description" content="Un asistente de IA 100% offline y totalmente portátil que se ejecuta desde una unidad USB. Impulsado por llama.cpp. Sin instalación necesaria.">
+
+    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@700,500,400&display=swap" rel="stylesheet">
+    <link href="https://api.fontshare.com/v2/css?f[]=zodiak@900,700,500,400&display=swap" rel="stylesheet">
+
+    <style>
+        :root, [data-theme="light"] {
+            /* Typography - Fluid Scale */
+            --text-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+            --text-sm: clamp(0.875rem, 0.8rem + 0.35vw, 1rem);
+            --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+            --text-lg: clamp(1.125rem, 1rem + 0.75vw, 1.5rem);
+            --text-xl: clamp(1.5rem, 1.2rem + 1.25vw, 2.25rem);
+            --text-2xl: clamp(2rem, 1.2rem + 2.5vw, 3.5rem);
+            --text-3xl: clamp(2.5rem, 1rem + 4vw, 4.5rem);
+            --text-4xl: clamp(3rem, 1rem + 5vw, 6rem);
+
+            /* Spacing - Modular Scale */
+            --space-1: 0.25rem;
+            --space-2: 0.5rem;
+            --space-3: 0.75rem;
+            --space-4: 1rem;
+            --space-5: 1.25rem;
+            --space-6: 1.5rem;
+            --space-8: 2rem;
+            --space-10: 2.5rem;
+            --space-12: 3rem;
+            --space-16: 4rem;
+            --space-20: 5rem;
+            --space-24: 6rem;
+            --space-32: 8rem;
+
+            /* Colors - Light Theme */
+            --color-bg: #f7f6f2;
+            --color-surface: #f9f8f5;
+            --color-surface-2: #fbfbf9;
+            --color-surface-offset: #edeae5;
+            --color-border: #d4d1ca;
+            --color-border-soft: color-mix(in srgb, var(--color-border) 10%, transparent);
+            --color-divider: #dcd9d5;
+            --color-text: #28251d;
+            --color-text-muted: #67645d;
+            --color-text-faint: #8d8a84;
+            --color-text-inverse: #f9f8f4;
+            --color-primary: #01696f;
+            --color-primary-hover: #0c4e54;
+            --color-primary-highlight: #cedcd8;
+            --color-primary-soft: color-mix(in srgb, var(--color-primary) 10%, transparent);
+            --color-primary-subtle: color-mix(in srgb, var(--color-primary) 5%, transparent);
+
+            /* Borders & Radius */
+            --radius-sm: 0.375rem;
+            --radius-md: 0.5rem;
+            --radius-lg: 0.75rem;
+            --radius-xl: 1rem;
+            --radius-2xl: 1.5rem;
+            --radius-full: 9999px;
+
+            /* Shadows */
+            --shadow-sm: 0 1px 2px rgba(40, 37, 29, 0.06);
+            --shadow-md: 0 4px 12px rgba(40, 37, 29, 0.08);
+            --shadow-lg: 0 12px 32px rgba(40, 37, 29, 0.12);
+            --shadow-xl: 0 20px 60px rgba(40, 37, 29, 0.15);
+            --shadow-primary: 0 4px 20px color-mix(in srgb, var(--color-primary) 30%, transparent);
+            --shadow-glow: 0 0 60px color-mix(in srgb, var(--color-primary) 15%, transparent);
+
+            /* Layout */
+            --content-default: 1100px;
+            --content-narrow: 800px;
+
+            /* Typography */
+            --font-display: 'Zodiak', Georgia, serif;
+            --font-body: 'Satoshi', system-ui, sans-serif;
+            --font-mono: 'SF Mono', Consolas, monospace;
+
+            /* Transitions */
+            --transition-fast: 120ms cubic-bezier(0.16, 1, 0.3, 1);
+            --transition: 180ms cubic-bezier(0.16, 1, 0.3, 1);
+            --transition-slow: 300ms cubic-bezier(0.16, 1, 0.3, 1);
+
+            /* Z-index */
+            --z-dropdown: 100;
+            --z-sticky: 200;
+            --z-fixed: 300;
+            --z-modal: 400;
+            --z-toast: 500;
+        }
+
+        [data-theme="dark"] {
+            /* Colors - Dark Theme */
+            --color-bg: #171614;
+            --color-surface: #1c1b19;
+            --color-surface-2: #201f1d;
+            --color-surface-offset: #22211f;
+            --color-border: #393836;
+            --color-border-soft: color-mix(in srgb, var(--color-border) 10%, transparent);
+            --color-divider: #262523;
+            --color-text: #e4e0d8;
+            --color-text-muted: #b5b0a7;
+            --color-text-faint: #8a857d;
+            --color-text-inverse: #171614;
+            --color-primary: #4f98a3;
+            --color-primary-hover: #227f8b;
+            --color-primary-highlight: #313b3b;
+            --color-primary-soft: color-mix(in srgb, var(--color-primary) 10%, transparent);
+            --color-primary-subtle: color-mix(in srgb, var(--color-primary) 5%, transparent);
+
+            /* Shadows - Dark Theme */
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.4);
+            --shadow-xl: 0 20px 60px rgba(0, 0, 0, 0.5);
+            --shadow-primary: 0 4px 20px color-mix(in srgb, var(--color-primary) 30%, transparent);
+            --shadow-glow: 0 0 60px color-mix(in srgb, var(--color-primary) 15%, transparent);
+        }
+
+        /* ==========================================================================
+           RESET & BASE
+           ========================================================================== */
+
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 80px;
+        }
+
+        body {
+            font-family: var(--font-body);
+            font-size: var(--text-base);
+            line-height: 1.6;
+            color: var(--color-text);
+            background-color: var(--color-bg);
+            background-image: radial-gradient(
+                ellipse at top,
+                var(--color-primary-subtle) 0%,
+                transparent 50%
+            );
+            background-attachment: fixed;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ==========================================================================
+           ANIMATIONS
+           ========================================================================== */
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .fade-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .fade-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .stagger-1 { transition-delay: 0.1s; }
+        .stagger-2 { transition-delay: 0.2s; }
+        .stagger-3 { transition-delay: 0.3s; }
+        .stagger-4 { transition-delay: 0.4s; }
+        .stagger-5 { transition-delay: 0.5s; }
+        .stagger-6 { transition-delay: 0.6s; }
+
+        /* ==========================================================================
+           COMPONENTS
+           ========================================================================== */
+
+        /* Skip Link for Accessibility */
+        .skip-link {
+            position: absolute;
+            top: -100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--color-primary);
+            color: var(--color-text-inverse);
+            padding: var(--space-3) var(--space-6);
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            font-weight: 500;
+            z-index: var(--z-modal);
+            transition: top var(--transition);
+        }
+
+        .skip-link:focus {
+            top: var(--space-4);
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: fixed;
+            top: var(--space-6);
+            right: var(--space-6);
+            z-index: var(--z-fixed);
+            width: 44px;
+            height: 44px;
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-full);
+            padding: 0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--color-primary);
+            box-shadow: var(--shadow-primary);
+        }
+
+        .theme-toggle:focus-visible {
+            outline: 2px solid var(--color-primary);
+            outline-offset: 2px;
+        }
+
+        .theme-toggle svg {
+            width: 22px;
+            height: 22px;
+            color: var(--color-text);
+            transition: transform var(--transition-slow);
+        }
+
+        .theme-toggle:hover svg {
+            transform: rotate(15deg);
+        }
+
+        /* ==========================================================================
+           HEADER
+           ========================================================================== */
+
+        .header {
+            position: sticky;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: var(--z-sticky);
+            background: color-mix(in srgb, var(--color-bg) 85%, transparent);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--color-border-soft);
+            transition: background var(--transition), border-color var(--transition);
+        }
+
+        .header-inner {
+            max-width: var(--content-default);
+            margin: 0 auto;
+            padding: var(--space-4) var(--space-6);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            text-decoration: none;
+            color: var(--color-text);
+            font-family: var(--font-display);
+            font-size: var(--text-lg);
+            font-weight: 500;
+            transition: color var(--transition);
+        }
+
+        .logo:hover {
+            color: var(--color-primary);
+        }
+
+        .logo svg {
+            width: 32px;
+            height: 32px;
+            color: var(--color-primary);
+            flex-shrink: 0;
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            gap: var(--space-8);
+        }
+
+        .nav-link {
+            color: var(--color-text-muted);
+            text-decoration: none;
+            font-size: var(--text-sm);
+            font-weight: 500;
+            position: relative;
+            transition: color var(--transition);
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--color-primary);
+            transition: width var(--transition);
+        }
+
+        .nav-link:hover {
+            color: var(--color-primary);
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        /* ==========================================================================
+           HERO SECTION
+           ========================================================================== */
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: var(--space-32) var(--space-6) var(--space-20);
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(
+                circle,
+                var(--color-primary-subtle) 0%,
+                transparent 70%
+            );
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            max-width: var(--content-narrow);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+            padding: var(--space-2) var(--space-4);
+            background: var(--color-primary-soft);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-full);
+            font-size: var(--text-xs);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--color-primary);
+            margin-bottom: var(--space-6);
+        }
+
+        .badge-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--color-primary);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .hero-title {
+            font-family: var(--font-display);
+            font-size: var(--text-4xl);
+            font-weight: 500;
+            line-height: 1.05;
+            letter-spacing: -0.02em;
+            margin-bottom: var(--space-8);
+            color: var(--color-text);
+        }
+
+        .hero-title em {
+            font-style: normal;
+            color: var(--color-primary);
+            position: relative;
+        }
+
+        .hero-title em::after {
+            content: '';
+            position: absolute;
+            bottom: 0.1em;
+            left: 0;
+            width: 100%;
+            height: 0.08em;
+            background: var(--color-primary);
+            opacity: 0.5;
+        }
+
+        .hero-description {
+            font-size: var(--text-lg);
+            color: var(--color-text-muted);
+            line-height: 1.7;
+            max-width: 600px;
+            margin: 0 auto var(--space-12);
+        }
+
+        .cta-group {
+            display: flex;
+            gap: var(--space-4);
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-4) var(--space-8);
+            font-family: var(--font-body);
+            font-size: var(--text-base);
+            font-weight: 500;
+            text-decoration: none;
+            border-radius: var(--radius-lg);
+            transition: all var(--transition);
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn:focus-visible {
+            outline: 2px solid var(--color-primary);
+            outline-offset: 2px;
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: var(--color-text-inverse);
+            box-shadow: var(--shadow-primary);
+        }
+
+        .btn-primary:hover {
+            background: var(--color-primary-hover);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .btn-secondary {
+            background: var(--color-surface);
+            color: var(--color-text);
+            border: 1px solid var(--color-border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+        }
+
+        .btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: var(--space-16);
+            margin-top: var(--space-24);
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-family: var(--font-display);
+            font-size: var(--text-3xl);
+            font-weight: 500;
+            color: var(--color-primary);
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: var(--text-sm);
+            color: var(--color-text-muted);
+            margin-top: var(--space-2);
+        }
+
+        /* ==========================================================================
+           SECTIONS
+           ========================================================================== */
+
+        section {
+            padding: var(--space-20) var(--space-6);
+            max-width: var(--content-default);
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: var(--space-16);
+        }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-size: var(--text-3xl);
+            font-weight: 500;
+            letter-spacing: -0.01em;
+            margin-bottom: var(--space-4);
+            color: var(--color-text);
+        }
+
+        .section-subtitle {
+            font-size: var(--text-lg);
+            color: var(--color-text-muted);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        /* ==========================================================================
+           WHAT IS SECTION
+           ========================================================================== */
+
+        .what-is {
+            background: linear-gradient(
+                180deg,
+                var(--color-bg) 0%,
+                var(--color-surface-offset) 100%
+            );
+        }
+
+        .what-is-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-16);
+            align-items: center;
+        }
+
+        .what-is-content h2 {
+            font-family: var(--font-display);
+            font-size: var(--text-2xl);
+            font-weight: 500;
+            margin-bottom: var(--space-6);
+            color: var(--color-text);
+        }
+
+        .what-is-content p {
+            color: var(--color-text-muted);
+            line-height: 1.8;
+            margin-bottom: var(--space-6);
+            font-size: var(--text-base);
+        }
+
+        .what-is-visual {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .what-is-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-2xl);
+            padding: var(--space-12);
+            box-shadow: var(--shadow-lg);
+            position: relative;
+        }
+
+        .what-is-card::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: var(--radius-2xl);
+            padding: 1px;
+            background: linear-gradient(
+                135deg,
+                var(--color-primary-subtle) 0%,
+                transparent 50%
+            );
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+
+        .what-is-card svg {
+            width: 180px;
+            height: 180px;
+            color: var(--color-primary);
+        }
+
+        /* ==========================================================================
+           FEATURES SECTION
+           ========================================================================== */
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: var(--space-6);
+        }
+
+        .feature-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-xl);
+            padding: var(--space-8);
+            transition: all var(--transition);
+            position: relative;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: var(--radius-xl);
+            padding: 1px;
+            background: linear-gradient(
+                135deg,
+                color-mix(in srgb, var(--color-border) 50%, transparent) 0%,
+                transparent 50%
+            );
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity var(--transition);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--color-primary);
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        .feature-icon {
+            width: 56px;
+            height: 56px;
+            background: var(--color-primary-subtle);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: var(--space-5);
+            color: var(--color-primary);
+        }
+
+        .feature-card h3 {
+            font-family: var(--font-display);
+            font-size: var(--text-xl);
+            font-weight: 500;
+            margin-bottom: var(--space-3);
+            color: var(--color-text);
+        }
+
+        .feature-card p {
+            color: var(--color-text-muted);
+            line-height: 1.7;
+            font-size: var(--text-sm);
+        }
+
+        /* ==========================================================================
+           ARCHITECTURE SECTION
+           ========================================================================== */
+
+        .architecture {
+            background: var(--color-surface);
+            border-top: 1px solid var(--color-border);
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .arch-diagram {
+            background: var(--color-surface-2);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-2xl);
+            padding: var(--space-12);
+            max-width: var(--content-narrow);
+            margin: 0 auto;
+        }
+
+        .arch-stack {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--space-3);
+        }
+
+        .arch-layer {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--space-5) var(--space-8);
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            transition: all var(--transition);
+        }
+
+        .arch-layer:hover {
+            border-color: var(--color-primary);
+            box-shadow: var(--shadow-md);
+        }
+
+        .arch-layer.main {
+            background: var(--color-primary);
+            border-color: var(--color-primary);
+        }
+
+        .arch-layer-name {
+            font-weight: 600;
+            color: var(--color-text);
+        }
+
+        .arch-layer.main .arch-layer-name {
+            color: var(--color-text-inverse);
+        }
+
+        .arch-layer-desc {
+            font-size: var(--text-xs);
+            color: var(--color-text-faint);
+        }
+
+        .arch-layer.main .arch-layer-desc {
+            color: color-mix(in srgb, var(--color-text-inverse) 70%, transparent);
+        }
+
+        /* ==========================================================================
+           INSTALLATION SECTION
+           ========================================================================== */
+
+        .install-tabs {
+            display: flex;
+            justify-content: center;
+            gap: var(--space-2);
+            margin-bottom: var(--space-12);
+            flex-wrap: wrap;
+        }
+
+        .install-tab {
+            padding: var(--space-3) var(--space-6);
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid transparent;
+            color: var(--color-text-muted);
+            font-family: var(--font-body);
+            font-size: var(--text-base);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition);
+            position: relative;
+        }
+
+        .install-tab:hover {
+            color: var(--color-text);
+        }
+
+        .install-tab.active {
+            color: var(--color-primary);
+        }
+
+        .install-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--color-primary);
+        }
+
+        .install-content {
+            display: none;
+        }
+
+        .install-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .install-steps {
+            display: grid;
+            gap: var(--space-8);
+            max-width: var(--content-narrow);
+            margin: 0 auto;
+        }
+
+        .install-step {
+            display: flex;
+            gap: var(--space-6);
+            align-items: flex-start;
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--color-primary-subtle);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-full);
+            font-family: var(--font-display);
+            font-size: var(--text-lg);
+            font-weight: 500;
+            color: var(--color-primary);
+            flex-shrink: 0;
+        }
+
+        .step-content h4 {
+            font-size: var(--text-lg);
+            font-weight: 600;
+            margin-bottom: var(--space-2);
+            color: var(--color-text);
+        }
+
+        .step-content p {
+            color: var(--color-text-muted);
+            line-height: 1.7;
+        }
+
+        .code-block {
+            background: var(--color-surface-2);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            padding: var(--space-4);
+            font-family: var(--font-mono);
+            font-size: var(--text-sm);
+            overflow-x: auto;
+            margin-top: var(--space-4);
+            color: var(--color-text);
+        }
+
+        .code-block code {
+            white-space: pre;
+        }
+
+        /* ==========================================================================
+           MODELS SECTION
+           ========================================================================== */
+
+        .models-section {
+            background: var(--color-surface);
+            border-top: 1px solid var(--color-border);
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .models-table-wrapper {
+            overflow-x: auto;
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--color-border);
+        }
+
+        .models-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--color-surface-2);
+        }
+
+        .models-table th,
+        .models-table td {
+            padding: var(--space-5) var(--space-6);
+            text-align: left;
+            border-bottom: 1px solid var(--color-divider);
+        }
+
+        .models-table th {
+            font-size: var(--text-sm);
+            font-weight: 600;
+            color: var(--color-text);
+            background: var(--color-surface-offset);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .models-table td {
+            font-size: var(--text-sm);
+            color: var(--color-text-muted);
+        }
+
+        .models-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .models-table tr:hover td {
+            background: var(--color-surface-offset);
+        }
+
+        .model-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: var(--space-1) var(--space-3);
+            border-radius: var(--radius-full);
+            font-size: var(--text-xs);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .badge-light {
+            background: var(--color-primary-highlight);
+            color: var(--color-primary);
+        }
+
+        .badge-medium {
+            background: var(--color-primary);
+            color: var(--color-text-inverse);
+        }
+
+        .badge-heavy {
+            background: var(--color-text-muted);
+            color: var(--color-text-inverse);
+        }
+
+        /* ==========================================================================
+           FAQ SECTION
+           ========================================================================== */
+
+        .faq-grid {
+            display: grid;
+            gap: var(--space-4);
+            max-width: var(--content-narrow);
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            transition: border-color var(--transition), box-shadow var(--transition);
+        }
+
+        .faq-item:hover {
+            border-color: var(--color-border);
+            box-shadow: var(--shadow-md);
+        }
+
+        .faq-question {
+            width: 100%;
+            padding: var(--space-6);
+            background: transparent;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: var(--space-4);
+            font-family: var(--font-body);
+            font-size: var(--text-base);
+            font-weight: 500;
+            color: var(--color-text);
+            text-align: left;
+            cursor: pointer;
+            transition: color var(--transition);
+        }
+
+        .faq-question:hover {
+            color: var(--color-primary);
+        }
+
+        .faq-icon {
+            width: 24px;
+            height: 24px;
+            flex-shrink: 0;
+            color: var(--color-text-muted);
+            transition: transform var(--transition), color var(--transition);
+        }
+
+        .faq-item.open .faq-icon {
+            transform: rotate(180deg);
+            color: var(--color-primary);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+        }
+
+        .faq-item.open .faq-answer {
+            max-height: 500px;
+            padding: 0 var(--space-6) var(--space-6);
+        }
+
+        .faq-answer p {
+            color: var(--color-text-muted);
+            line-height: 1.7;
+            font-size: var(--text-sm);
+        }
+
+        /* ==========================================================================
+           FOOTER
+           ========================================================================== */
+
+        .footer {
+            background: var(--color-surface);
+            border-top: 1px solid var(--color-border);
+            padding: var(--space-16) var(--space-6) var(--space-8);
+        }
+
+        .footer-content {
+            max-width: var(--content-default);
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-12);
+        }
+
+        .footer-section h4 {
+            font-family: var(--font-display);
+            font-size: var(--text-base);
+            font-weight: 500;
+            margin-bottom: var(--space-5);
+            color: var(--color-text);
+        }
+
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-3);
+        }
+
+        .footer-links a {
+            color: var(--color-text-muted);
+            text-decoration: none;
+            font-size: var(--text-sm);
+            transition: color var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: var(--color-primary);
+        }
+
+        .footer-bottom {
+            max-width: var(--content-default);
+            margin: var(--space-12) auto 0;
+            padding-top: var(--space-8);
+            border-top: 1px solid var(--color-divider);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: var(--space-6);
+        }
+
+        .footer-credits {
+            display: flex;
+            align-items: center;
+            gap: var(--space-6);
+            font-size: var(--text-sm);
+            color: var(--color-text-faint);
+        }
+
+        .footer-credit {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+
+        .footer-credit::before {
+            content: '';
+            width: 4px;
+            height: 4px;
+            background: var(--color-primary);
+            border-radius: 50%;
+        }
+
+        .footer-brand {
+            font-size: var(--text-sm);
+            color: var(--color-text-muted);
+        }
+
+        .footer-brand a {
+            color: var(--color-primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        /* ==========================================================================
+           RESPONSIVE
+           ========================================================================== */
+
+        @media (max-width: 768px) {
+            .header-inner {
+                padding: var(--space-4);
+            }
+
+            .nav {
+                display: none;
+            }
+
+            .hero-title {
+                font-size: var(--text-3xl);
+            }
+
+            .what-is-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .what-is-visual {
+                order: -1;
+            }
+
+            .hero-stats {
+                gap: var(--space-8);
+            }
+
+            .cta-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .btn {
+                justify-content: center;
+            }
+
+            .theme-toggle {
+                top: var(--space-4);
+                right: var(--space-4);
+                width: 40px;
+                height: 40px;
+            }
+
+            .theme-toggle svg {
+                width: 20px;
+                height: 20px;
+            }
+
+            .install-step {
+                flex-direction: column;
+                gap: var(--space-3);
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            section {
+                padding: var(--space-12) var(--space-4);
+            }
+
+            .hero {
+                padding: var(--space-24) var(--space-4) var(--space-16);
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ==========================================================================
+           PRINT STYLES
+           ========================================================================== */
+
+        @media print {
+            .theme-toggle,
+            .header,
+            .btn,
+            .install-tabs {
+                display: none;
+            }
+
+            body {
+                background: white;
+                color: black;
+            }
+
+            .feature-card,
+            .faq-item {
+                break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
+
+    <button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema">
+        <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+        </svg>
+    </button>
+
+    <header class="header">
+        <div class="header-inner">
+            <a href="#" class="logo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                    <path d="M2 17l10 5 10-5"/>
+                    <path d="M2 12l10 5 10-5"/>
+                </svg>
+                Portable AI USB
+            </a>
+            <nav class="nav">
+                <a href="#what-is" class="nav-link">Qué es</a>
+                <a href="#features" class="nav-link">Características</a>
+                <a href="#architecture" class="nav-link">Arquitectura</a>
+                <a href="#install" class="nav-link">Instalación</a>
+                <a href="#models" class="nav-link">Modelos</a>
+                <a href="#faq" class="nav-link">FAQ</a>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main-content">
+        <section class="hero">
+            <div class="hero-content fade-up">
+                <div class="badge">
+                    <span class="badge-dot"></span>
+                    100% Offline • Completamente Privado
+                </div>
+                <h1 class="hero-title">
+                    Tu IA Privada,<br>
+                    <em>Directo en tu Bolsillo</em>
+                </h1>
+                <p class="hero-description">
+                    Un asistente de IA 100% offline que se ejecuta enteramente desde una unidad USB.
+                    Impulsado por llama.cpp. Sin instalación. Sin nube. Sin rastros.
+                </p>
+                <div class="cta-group">
+                    <a href="#install" class="btn btn-primary">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        Descargar Ahora
+                    </a>
+                    <a href="https://github.com" class="btn btn-secondary" target="_blank" rel="noopener">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                        </svg>
+                        Ver en GitHub
+                    </a>
+                </div>
+            </div>
+
+            <div class="hero-stats fade-up stagger-2">
+                <div class="stat">
+                    <div class="stat-value">100%</div>
+                    <div class="stat-label">Offline</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">Cero</div>
+                    <div class="stat-label">Instalación</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">&lt;500MB</div>
+                    <div class="stat-label">Espacio en Disco</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="what-is" class="what-is">
+            <div class="what-is-grid">
+                <div class="what-is-content fade-up">
+                    <h2>¿Qué es Portable AI USB?</h2>
+                    <p>
+                        Portable AI USB es un asistente de IA completamente autónomo que se ejecuta desde cualquier unidad USB.
+                        Aprovecha llama.cpp para una inferencia local eficiente y una interfaz web personalizada
+                        para una experiencia de usuario intuitiva.
+                    </p>
+                    <p>
+                        A diferencia del proyecto original que dependía de Ollama y AnythingLLM, esta versión utiliza
+                        llama.cpp directamente, lo que lo hace verdaderamente portátil sin requerir Docker o procesos
+                        de instalación complejos.
+                    </p>
+                    <p>
+                        Simplemente conecta tu USB, ejecuta el lanzador y tendrás un asistente de IA con todas las funciones
+                        corriendo en segundos. Todas tus conversaciones permanecen en el USB: nada se escribe nunca
+                        en el ordenador anfitrión.
+                    </p>
+                </div>
+                <div class="what-is-visual fade-up stagger-1">
+                    <div class="what-is-card">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="4" y="2" width="16" height="20" rx="2" ry="2"/>
+                            <line x1="12" y1="18" x2="12" y2="18"/>
+                            <path d="M8 6h8M8 10h8M8 14h8"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="features">
+            <div class="section-header fade-up">
+                <h2 class="section-title">¿Por qué usar esto en lugar de Ollama?</h2>
+                <p class="section-subtitle">
+                    Este proyecto aborda las limitaciones del Portable-AI-USB original manteniendo
+                    su promesa central de una IA portátil y privada.
+                </p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card fade-up stagger-1">
+                    <div class="feature-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                            <path d="M2 17l10 5 10-5"/>
+                            <path d="M2 12l10 5 10-5"/>
+                        </svg>
+                    </div>
+                    <h3>Portabilidad Real</h3>
+                    <p>Binarios de llama.cpp incluidos para todas las plataformas. Sin servicios en segundo plano, sin necesidad de instalación. Conectar y usar.</p>
+                </div>
+
+                <div class="feature-card fade-up stagger-2">
+                    <div class="feature-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                        </svg>
+                    </div>
+                    <h3>Privacidad Total</h3>
+                    <p>Todos los datos se quedan en el USB. Sin telemetría, sin servicios en la nube, sin rastros en el ordenador anfitrión.</p>
+                </div>
+
+                <div class="feature-card fade-up stagger-3">
+                    <div class="feature-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M12 6v6l4 2"/>
+                        </svg>
+                    </div>
+                    <h3>Inicio Rápido</h3>
+                    <p>Listo en menos de 10 segundos. Sin contenedores Docker que levantar, sin dependencias pesadas que cargar.</p>
+                </div>
+
+                <div class="feature-card fade-up stagger-4">
+                    <div class="feature-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                            <line x1="8" y1="21" x2="16" y2="21"/>
+                            <line x1="12" y1="17" x2="12" y2="21"/>
+                        </svg>
+                    </div>
+                    <h3>Interfaz Web Limpia</h3>
+                    <p>Interfaz personalizada inspirada en herramientas de IA modernas. Sin aplicaciones infladas, solo una UI web limpia.</p>
+                </div>
+
+                <div class="feature-card fade-up stagger-5">
+                    <div class="feature-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                        </svg>
+                    </div>
+                    <h3>Aceleración por GPU</h3>
+                    <p>Detección automática de NVIDIA CUDA, Apple Metal y respaldo a CPU. No requiere configuración manual.</p>
+                </div>
+
+                <div class="feature-card fade-up stagger-6">
+                    <div class="feature-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="16 18 22 12 16 6"/>
+                            <polyline points="8 6 2 12 8 18"/>
+                        </svg>
+                    </div>
+                    <h3>Flexibilidad de Modelos</h3>
+                    <p>Usa cualquier modelo GGUF de HuggingFace. Simplemente descarga y suelta en la carpeta de modelos.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="architecture" class="architecture">
+            <div class="section-header fade-up">
+                <h2 class="section-title">Arquitectura</h2>
+                <p class="section-subtitle">
+                    Un stack eficiente y limpio diseñado para la portabilidad y el rendimiento.
+                </p>
+            </div>
+
+            <div class="arch-diagram fade-up stagger-1">
+                <div class="arch-stack">
+                    <div class="arch-layer main">
+                        <span class="arch-layer-name">Interfaz Web</span>
+                        <span class="arch-layer-desc">HTML/CSS/JS + Backend en Node.js</span>
+                    </div>
+                    <div class="arch-layer">
+                        <span class="arch-layer-name">Servidor llama.cpp</span>
+                        <span class="arch-layer-desc">Motor de inferencia con API HTTP</span>
+                    </div>
+                    <div class="arch-layer">
+                        <span class="arch-layer-name">Modelos GGUF</span>
+                        <span class="arch-layer-desc">Modelos de lenguaje cuantizados</span>
+                    </div>
+                    <div class="arch-layer">
+                        <span class="arch-layer-name">Capa de Hardware</span>
+                        <span class="arch-layer-desc">CPU / CUDA / Metal</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="install">
+            <div class="section-header fade-up">
+                <h2 class="section-title">Instalación</h2>
+                <p class="section-subtitle">
+                    Ponte en marcha en minutos. Elige tu sistema operativo a continuación.
+                </p>
+            </div>
+
+            <div class="install-tabs fade-up">
+                <button class="install-tab active" data-tab="windows">Windows</button>
+                <button class="install-tab" data-tab="macos">macOS</button>
+                <button class="install-tab" data-tab="linux">Linux</button>
+            </div>
+
+            <div class="install-content active fade-up" id="windows">
+                <div class="install-steps">
+                    <div class="install-step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h4>Formatea tu USB</h4>
+                            <p>Formatea como exFAT (recomendado) para máxima compatibilidad.</p>
+                        </div>
+                    </div>
+                    <div class="install-step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h4>Ejecuta el instalador</h4>
+                            <p>Haz doble clic en <code>install.bat</code> en tu unidad USB.</p>
+                            <div class="code-block"><code>install.bat</code></div>
+                        </div>
+                    </div>
+                    <div class="install-step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h4>Selecciona modelos</h4>
+                            <p>Elige qué modelos de IA descargar durante la instalación.</p>
+                        </div>
+                    </div>
+                    <div class="install-step">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <h4>Lanzar</h4>
+                            <p>Haz doble clic en <code>start.bat</code> y abre http://localhost:7777</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="install-content" id="macos">
+                <div class="install-steps">
+                    <div class="install-step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h4>Formatea tu USB</h4>
+                            <p>Usa Utilidad de Discos para formatear como exFAT.</p>
+                        </div>
+                    </div>
+                    <div class="install-step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h4>Abre la Terminal</h4>
+                            <p>Navega a tu USB y ejecuta el instalador.</p>
+                            <div class="code-block"><code>cd /Volumes/TU_USB/USB-IA
+chmod +x install.sh
+./install.sh</code></div>
+                        </div>
+                    </div>
+                    <div class="install-step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h4>Selecciona modelos</h4>
+                            <p>Elige de la lista de modelos recomendados.</p>
+                        </div>
+                    </div>
+                    <div class="install-step">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <h4>Lanzar</h4>
+                            <p>Haz doble clic en <code>start.command</code> en el Finder.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="install-content" id="linux">
+                <div class="install-steps">
+                    <div class="install-step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h4>Instala dependencias</h4>
+                            <p>Instala Node.js si no está disponible.</p>
+                            <div class="code-block"><code>sudo apt install nodejs npm</code></div>
+                        </div>
+                    </div>
+                    <div class="install-step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h4>Ejecuta el instalador</h4>
+                            <p>Haz el script ejecutable y córrelo.</p>
+                            <div class="code-block"><code>cd /ruta/a/usb/USB-IA
+chmod +x install.sh
+./install.sh</code></div>
+                        </div>
+                    </div>
+                    <div class="install-step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h4>Selecciona modelos</h4>
+                            <p>Elige qué modelos descargar.</p>
+                        </div>
+                    </div>
+                    <div class="install-step">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <h4>Lanzar</h4>
+                            <p>Ejecuta el script de inicio.</p>
+                            <div class="code-block"><code>./start.sh</code></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="models" class="models-section">
+            <div class="section-header fade-up">
+                <h2 class="section-title">Modelos Recomendados</h2>
+                <p class="section-subtitle">
+                    Estos modelos han sido probados y optimizados para uso portátil desde USB.
+                </p>
+            </div>
+
+            <div class="models-table-wrapper fade-up">
+                <table class="models-table">
+                    <thead>
+                        <tr>
+                            <th>Modelo</th>
+                            <th>Parámetros</th>
+                            <th>Tamaño</th>
+                            <th>RAM Necesaria</th>
+                            <th>VRAM (GPU)</th>
+                            <th>Ideal para</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Llama 3.2 3B Instruct Q5</td>
+                            <td>3B</td>
+                            <td>2.1 GB</td>
+                            <td>6 GB</td>
+                            <td>4 GB</td>
+                            <td><span class="model-badge badge-light">Ligero</span></td>
+                        </tr>
+                        <tr>
+                            <td>Phi-3.5 Mini Q5</td>
+                            <td>3.8B</td>
+                            <td>2.9 GB</td>
+                            <td>6 GB</td>
+                            <td>4 GB</td>
+                            <td><span class="model-badge badge-light">Ligero</span></td>
+                        </tr>
+                        <tr>
+                            <td>Llama 3.1 8B Instruct Q4</td>
+                            <td>8B</td>
+                            <td>4.9 GB</td>
+                            <td>10 GB</td>
+                            <td>6 GB</td>
+                            <td><span class="model-badge badge-medium">Equilibrado</span></td>
+                        </tr>
+                        <tr>
+                            <td>Mistral 7B v0.3 Q4</td>
+                            <td>7B</td>
+                            <td>4.4 GB</td>
+                            <td>10 GB</td>
+                            <td>6 GB</td>
+                            <td><span class="model-badge badge-medium">Equilibrado</span></td>
+                        </tr>
+                        <tr>
+                            <td>Qwen 2.5 7B Instruct Q4</td>
+                            <td>7B</td>
+                            <td>4.7 GB</td>
+                            <td>10 GB</td>
+                            <td>6 GB</td>
+                            <td><span class="model-badge badge-medium">Equilibrado</span></td>
+                        </tr>
+                        <tr>
+                            <td>NemoMix 12B Q4</td>
+                            <td>12B</td>
+                            <td>7.0 GB</td>
+                            <td>16 GB</td>
+                            <td>10 GB</td>
+                            <td><span class="model-badge badge-heavy">Alta Calidad</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="faq">
+            <div class="section-header fade-up">
+                <h2 class="section-title">Preguntas Frecuentes</h2>
+                <p class="section-subtitle">
+                    Dudas comunes sobre Portable AI USB.
+                </p>
+            </div>
+
+            <div class="faq-grid">
+                <div class="faq-item fade-up stagger-1">
+                    <button class="faq-question">
+                        <span>¿Por qué llama.cpp en lugar de Ollama?</span>
+                        <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 12 15 18 9"/>
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p>llama.cpp es más ligero, más rápido de iniciar y no requiere servicios en segundo plano. Es verdaderamente portátil: solo binarios que se ejecutan directamente desde el USB sin instalación.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item fade-up stagger-2">
+                    <button class="faq-question">
+                        <span>¿Puedo usar mis propios modelos?</span>
+                        <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 12 15 18 9"/>
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p>¡Sí! Cualquier modelo GGUF de HuggingFace funcionará. Simplemente descarga el archivo .gguf y colócalo en la carpeta llamacpp/models/ en tu USB.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item fade-up stagger-3">
+                    <button class="faq-question">
+                        <span>¿Es realmente 100% offline?</span>
+                        <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 12 15 18 9"/>
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Sí, tras la descarga inicial de los modelos, no se requiere conexión a internet. Toda la inferencia ocurre localmente en tu máquina.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item fade-up stagger-4">
+                    <button class="faq-question">
+                        <span>¿Qué pasa con la aceleración por GPU?</span>
+                        <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 12 15 18 9"/>
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p>El lanzador detecta automáticamente GPUs NVIDIA (CUDA), Apple Silicon (Metal) y vuelve a CPU si ninguna está disponible. No hace falta configuración manual.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item fade-up stagger-5">
+                    <button class="faq-question">
+                        <span>¿Qué rendimiento puedo esperar?</span>
+                        <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 12 15 18 9"/>
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p>En CPU: 5-15 tokens/segundo para modelos 3B, 3-8 tokens/segundo para modelos 7B. Con GPU: 20-50+ tokens/segundo dependiendo de tu hardware.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item fade-up stagger-6">
+                    <button class="faq-question">
+                        <span>¿Deja algún rastro en el ordenador anfitrión?</span>
+                        <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 12 15 18 9"/>
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p>No hay entradas de registro, ni archivos temporales, ni datos de aplicación. Todo permanece en la unidad USB. Simplemente desconecta para eliminar cualquier rastro.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Recursos</h4>
+                <div class="footer-links">
+                    <a href="https://github.com/ggerganov/llama.cpp" target="_blank" rel="noopener">llama.cpp</a>
+                    <a href="https://huggingface.co/models?search=gguf" target="_blank" rel="noopener">Modelos GGUF</a>
+                    <a href="INSTALLATION.md">Guía Completa de Instalación</a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>Comunidad</h4>
+                <div class="footer-links">
+                    <a href="https://github.com" target="_blank" rel="noopener">Repositorio de GitHub</a>
+                    <a href="https://github.com/issues" target="_blank" rel="noopener">Reportar Problemas</a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>Legal</h4>
+                <div class="footer-links">
+                    <a href="#">Licencia (Apache 2.0)</a>
+                    <a href="#">Política de Privacidad</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="footer-credits">
+                <span class="footer-credit">Fuentes de <a href="https://fontshare.com" target="_blank" rel="noopener">Fontshare</a></span>
+                <span class="footer-credit">llama.cpp por <a href="https://github.com/ggerganov" target="_blank" rel="noopener">ggerganov</a></span>
+            </div>
+            <div class="footer-brand">
+                Web por <a href="https://barzakzen.com" target="_blank" rel="noopener">BarzakZen</a> • © 2026 Proyecto Portable AI USB
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // =====================================================
+        // THEME TOGGLE
+        // =====================================================
+        const themeToggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+
+        // Get preferred theme from localStorage or system preference
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const initialTheme = savedTheme || (prefersDark ? 'dark' : 'light');
+
+        html.setAttribute('data-theme', initialTheme);
+        updateThemeIcon(initialTheme);
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        });
+
+        function updateThemeIcon(theme) {
+            const sunIcon = `<svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="5"/>
+                <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+            </svg>`;
+            const moonIcon = `<svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>`;
+            themeToggle.innerHTML = theme === 'dark' ? sunIcon : moonIcon;
+        }
+
+        // =====================================================
+        // TAB SWITCHING
+        // =====================================================
+        document.querySelectorAll('.install-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabId = tab.dataset.tab;
+
+                // Update tabs
+                document.querySelectorAll('.install-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+
+                // Update content
+                document.querySelectorAll('.install-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        // =====================================================
+        // FAQ ACCORDION
+        // =====================================================
+        document.querySelectorAll('.faq-question').forEach(button => {
+            button.addEventListener('click', () => {
+                const item = button.parentElement;
+                const isOpen = item.classList.contains('open');
+
+                // Close all items
+                document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+
+                // Open clicked item if it wasn't open
+                if (!isOpen) {
+                    item.classList.add('open');
+                }
+            });
+        });
+
+        // =====================================================
+        // FADE UP ANIMATION (Intersection Observer)
+        // =====================================================
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px 0px -50px 0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-up').forEach(el => {
+            observer.observe(el);
+        });
+
+        // =====================================================
+        // SMOOTH SCROLL FOR ANCHOR LINKS
+        // =====================================================
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                const href = this.getAttribute('href');
+                if (href !== '#' && href !== '!') {
+                    e.preventDefault();
+                    const target = document.querySelector(href);
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }
+            });
+        });
+
+        // =====================================================
+        // KEYBOARD NAVIGATION
+        // =====================================================
+        document.addEventListener('keydown', (e) => {
+            // Ctrl/Cmd + K for theme toggle
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                themeToggle.click();
+            }
+        });
+    </script>
+</body>
+</html>

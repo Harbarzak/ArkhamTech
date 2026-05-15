@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Guía visual y profesional en español para crear tu primer agente de IA sin programar en un fin de semana." />
+  <title>Agente IA en un fin de semana</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&f[]=zodiak@400,700&display=swap" rel="stylesheet">
+  <style>
+    :root, [data-theme="light"] {
+      --text-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+      --text-sm: clamp(0.875rem, 0.8rem + 0.35vw, 1rem);
+      --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+      --text-lg: clamp(1.125rem, 1rem + 0.75vw, 1.5rem);
+      --text-xl: clamp(1.5rem, 1.2rem + 1.25vw, 2.25rem);
+      --text-2xl: clamp(2rem, 1.2rem + 2.5vw, 3.5rem);
+      --text-3xl: clamp(2.5rem, 1rem + 4vw, 5rem);
+      --space-1: 0.25rem; --space-2: 0.5rem; --space-3: 0.75rem; --space-4: 1rem;
+      --space-5: 1.25rem; --space-6: 1.5rem; --space-8: 2rem; --space-10: 2.5rem;
+      --space-12: 3rem; --space-16: 4rem; --space-20: 5rem; --space-24: 6rem;
+      --color-bg: #f7f6f2; --color-surface: #f9f8f5; --color-surface-2: #fbfbf9;
+      --color-surface-offset: #edeae5; --color-border: #d4d1ca; --color-divider: #dcd9d5;
+      --color-text: #28251d; --color-text-muted: #67645d; --color-text-faint: #8d8a84;
+      --color-text-inverse: #f9f8f4; --color-primary: #01696f; --color-primary-hover: #0c4e54;
+      --color-primary-highlight: #cedcd8; --color-blue: #006494; --color-success: #437a22;
+      --color-warning: #964219; --radius-sm: 0.375rem; --radius-md: 0.5rem; --radius-lg: 0.75rem;
+      --radius-xl: 1rem; --radius-full: 9999px; --shadow-sm: 0 1px 2px rgba(40,37,29,.06);
+      --shadow-md: 0 4px 12px rgba(40,37,29,.08); --shadow-lg: 0 12px 32px rgba(40,37,29,.12);
+      --content-default: 1100px; --content-wide: 1280px; --font-display: 'Zodiak', Georgia, serif;
+      --font-body: 'Satoshi', Inter, sans-serif; --transition-interactive: 180ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    [data-theme="dark"] {
+      --color-bg: #171614; --color-surface: #1c1b19; --color-surface-2: #201f1d;
+      --color-surface-offset: #22211f; --color-border: #393836; --color-divider: #262523;
+      --color-text: #e4e0d8; --color-text-muted: #b5b0a7; --color-text-faint: #8a857d;
+      --color-text-inverse: #171614; --color-primary: #4f98a3; --color-primary-hover: #227f8b;
+      --color-primary-highlight: #313b3b; --color-blue: #7eb2d8; --color-success: #82bb5b; --color-warning: #d08a63;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,.2); --shadow-md: 0 4px 12px rgba(0,0,0,.3); --shadow-lg: 0 12px 32px rgba(0,0,0,.4);
+    }
+    *,:before,:after{box-sizing:border-box;margin:0;padding:0}
+    html{-webkit-text-size-adjust:none;text-size-adjust:none;scroll-behavior:smooth;scroll-padding-top:6rem}
+    body{min-height:100dvh;line-height:1.6;font-family:var(--font-body);font-size:var(--text-base);color:var(--color-text);background:
+      radial-gradient(circle at top right, color-mix(in srgb, var(--color-primary) 12%, transparent), transparent 32%),
+      linear-gradient(180deg,var(--color-bg),var(--color-surface));}
+    img,svg{display:block;max-width:100%;height:auto}
+    a,button{transition:all var(--transition-interactive)}
+    button{cursor:pointer;background:none;border:none}
+    a{color:inherit;text-decoration:none}
+    p{max-width:72ch;color:var(--color-text-muted)}
+    h1,h2,h3{font-family:var(--font-display);line-height:1.05;color:var(--color-text)}
+    h1{font-size:var(--text-3xl);letter-spacing:-.03em}
+    h2{font-size:var(--text-2xl);margin-bottom:var(--space-4)}
+    h3{font-size:var(--text-xl)}
+    .skip-link{position:absolute;left:-9999px;top:auto}
+    .skip-link:focus{left:var(--space-4);top:var(--space-4);background:var(--color-primary);color:var(--color-text-inverse);padding:var(--space-3) var(--space-4);border-radius:var(--radius-md);z-index:999}
+    .container{max-width:var(--content-default);margin-inline:auto;padding-inline:var(--space-4)}
+    header.site-header{position:sticky;top:0;z-index:50;border-bottom:1px solid color-mix(in srgb, var(--color-text) 12%, transparent);backdrop-filter:blur(14px);background:color-mix(in srgb, var(--color-bg) 82%, transparent)}
+    .header-inner{display:flex;align-items:center;justify-content:space-between;gap:var(--space-4);padding:var(--space-4) 0}
+    .brand{display:flex;align-items:center;gap:var(--space-3);font-weight:700}
+    .brand svg{width:2rem;height:2rem;color:var(--color-primary)}
+    .nav{display:flex;gap:var(--space-4);flex-wrap:wrap}
+    .nav a{font-size:var(--text-sm);color:var(--color-text-muted)}
+    .nav a:hover,.nav a:focus-visible{color:var(--color-text)}
+    .theme-toggle{min-width:44px;min-height:44px;border:1px solid color-mix(in srgb, var(--color-text) 12%, transparent);border-radius:var(--radius-full);display:grid;place-items:center;background:var(--color-surface)}
+    .hero{padding:clamp(var(--space-12),10vw,var(--space-24)) 0 var(--space-16)}
+    .eyebrow{display:inline-flex;align-items:center;gap:var(--space-2);padding:var(--space-2) var(--space-3);border-radius:var(--radius-full);background:var(--color-primary-highlight);color:var(--color-primary);font-size:var(--text-xs);font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:var(--space-5)}
+    .hero-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:var(--space-8);align-items:end}
+    .hero-copy p{font-size:var(--text-lg);margin-top:var(--space-5)}
+    .hero-actions{display:flex;gap:var(--space-3);flex-wrap:wrap;margin-top:var(--space-6)}
+    .btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:var(--space-3) var(--space-5);border-radius:var(--radius-full);font-size:var(--text-sm);font-weight:700;border:1px solid transparent}
+    .btn-primary{background:var(--color-primary);color:var(--color-text-inverse);box-shadow:var(--shadow-md)}
+    .btn-primary:hover{background:var(--color-primary-hover)}
+    .btn-secondary{border-color:color-mix(in srgb, var(--color-text) 12%, transparent);background:var(--color-surface)}
+    .hero-card,.card,.timeline-item,.step,.example-card,.note{background:color-mix(in srgb, var(--color-surface) 88%, transparent);border:1px solid color-mix(in srgb, var(--color-text) 12%, transparent);border-radius:var(--radius-xl);box-shadow:var(--shadow-sm)}
+    .hero-card{padding:var(--space-6);display:grid;gap:var(--space-4)}
+    .stat{display:flex;justify-content:space-between;align-items:center;padding:var(--space-3) 0;border-bottom:1px solid var(--color-divider)}
+    .stat:last-child{border-bottom:none}
+    section{padding:clamp(var(--space-10),7vw,var(--space-20)) 0}
+    .section-intro{display:grid;grid-template-columns:.9fr 1.1fr;gap:var(--space-6);align-items:end;margin-bottom:var(--space-8)}
+    .grid-2,.grid-3{display:grid;gap:var(--space-4)}
+    .grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .card{padding:var(--space-5)}
+    .card h3{margin-bottom:var(--space-3)}
+    .kicker{font-size:var(--text-xs);text-transform:uppercase;letter-spacing:.08em;color:var(--color-primary);font-weight:700;margin-bottom:var(--space-2)}
+    .process-flow{padding:var(--space-6);overflow:auto}
+    .flow-svg{min-width:920px}
+    .flow-node{fill:var(--color-surface-2);stroke:color-mix(in srgb, var(--color-text) 16%, transparent);stroke-width:1.2}
+    .flow-node.primary{fill:color-mix(in srgb, var(--color-primary) 12%, var(--color-surface));stroke:var(--color-primary)}
+    .flow-text{font-family:var(--font-body);font-size:13px;fill:var(--color-text)}
+    .flow-sub{font-size:11px;fill:var(--color-text-muted)}
+    .timeline{display:grid;gap:var(--space-4)}
+    .timeline-item{padding:var(--space-5);display:grid;grid-template-columns:120px 1fr;gap:var(--space-4)}
+    .timeline-day{font-size:var(--text-sm);font-weight:700;color:var(--color-primary)}
+    .steps{display:grid;gap:var(--space-4)}
+    .step{padding:var(--space-5)}
+    .step-number{display:inline-grid;place-items:center;width:2rem;height:2rem;border-radius:var(--radius-full);background:var(--color-primary);color:var(--color-text-inverse);font-size:var(--text-sm);font-weight:700;margin-bottom:var(--space-3)}
+    .blueprint{display:grid;gap:var(--space-4)}
+    .blueprint-item{padding:var(--space-5);border-radius:var(--radius-lg);background:var(--color-surface-2);border:1px solid color-mix(in srgb, var(--color-text) 10%, transparent)}
+    .blueprint-item strong{display:block;margin-bottom:var(--space-2);color:var(--color-text)}
+    .code-block{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:0.95rem;white-space:pre-wrap;background:#0f1720;color:#e8eef2;padding:var(--space-5);border-radius:var(--radius-lg);overflow:auto;border:1px solid rgba(255,255,255,.08)}
+    .comparison{overflow:auto}
+    table{width:100%;border-collapse:collapse;font-size:var(--text-sm);background:var(--color-surface);border-radius:var(--radius-lg);overflow:hidden;border:1px solid color-mix(in srgb, var(--color-text) 12%, transparent)}
+    th,td{text-align:left;padding:var(--space-4);vertical-align:top;border-bottom:1px solid var(--color-divider)}
+    th{background:color-mix(in srgb, var(--color-primary) 10%, var(--color-surface));font-size:var(--text-xs);text-transform:uppercase;letter-spacing:.08em;color:var(--color-text)}
+    .note{padding:var(--space-5)}
+    .footer{padding:var(--space-10) 0 var(--space-16);border-top:1px solid var(--color-divider)}
+    .footer p{font-size:var(--text-sm)}
+    .fade-up{opacity:0;transform:translateY(18px);transition:opacity .6s ease, transform .6s ease}
+    .fade-up.visible{opacity:1;transform:translateY(0)}
+    @media (max-width: 960px){
+      .hero-grid,.section-intro,.grid-2,.grid-3,.timeline-item{grid-template-columns:1fr}
+      .nav{display:none}
+      .flow-svg{min-width:760px}
+    }
+    @media (max-width: 640px){
+      .hero-actions{flex-direction:column;align-items:stretch}
+      .timeline-item{gap:var(--space-2)}
+      .timeline-day{font-size:var(--text-xs)}
+    }
+    @media (prefers-reduced-motion: reduce){
+      html{scroll-behavior:auto}
+      .fade-up{opacity:1;transform:none;transition:none}
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="brand" aria-label="Guía de agentes IA">
+        <svg viewBox="0 0 64 64" fill="none" role="img" aria-label="Logo Agente IA">
+          <rect x="8" y="8" width="48" height="48" rx="14" stroke="currentColor" stroke-width="4"></rect>
+          <path d="M20 36L30 24L38 32L46 22" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path>
+          <circle cx="20" cy="36" r="3" fill="currentColor"></circle>
+          <circle cx="30" cy="24" r="3" fill="currentColor"></circle>
+          <circle cx="38" cy="32" r="3" fill="currentColor"></circle>
+          <circle cx="46" cy="22" r="3" fill="currentColor"></circle>
+        </svg>
+        <span>Agente IA · Fin de semana</span>
+      </div>
+      <nav class="nav" aria-label="Navegación principal">
+        <a href="#que-es">Qué es</a>
+        <a href="#plan">Plan</a>
+        <a href="#blueprint">Blueprint</a>
+        <a href="#iteracion">Iteración</a>
+        <a href="#ejemplos">Ejemplos</a>
+        <a href="#practica">Guía técnica</a>
+        <a href="#empezar">Primeros pasos</a>
+      </nav>
+      <button class="theme-toggle" type="button" data-theme-toggle aria-label="Cambiar tema">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main id="contenido">
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-copy fade-up">
+          <span class="eyebrow">Guía visual en español</span>
+          <h1>Crea tu primer agente de IA sin programar y en un solo fin de semana</h1>
+          <p>Esta página convierte el artículo original en una guía práctica, visual y autocontenida: explica qué es un agente, en qué se diferencia de un chatbot, cómo diseñarlo paso a paso y cómo construir uno útil incluso si partes desde cero.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#empezar">Empezar desde cero</a>
+            <a class="btn btn-secondary" href="#prompts-reales">Ver prompts reales</a>
+          </div>
+        </div>
+        <aside class="hero-card fade-up" aria-label="Resumen ejecutivo">
+          <div>
+            <p class="kicker">Qué promete este método</p>
+            <h3>De idea vaga a agente operativo</h3>
+          </div>
+          <div class="stat"><span>Perfil requerido</span><strong>Cero código</strong></div>
+          <div class="stat"><span>Herramienta sugerida</span><strong>Claude Cowork o Projects</strong></div>
+          <div class="stat"><span>Tiempo estimado</span><strong>1 fin de semana</strong></div>
+          <div class="stat"><span>Primer resultado esperado</span><strong>60–70% correcto</strong></div>
+          <div class="stat"><span>Mejora típica</span><strong>3–4 iteraciones</strong></div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="empezar">
+      <div class="container">
+        <div class="section-intro fade-up">
+          <div>
+            <p class="kicker">Primeros pasos</p>
+            <h2>Qué significa todo esto si empiezas desde cero</h2>
+          </div>
+          <p>Si no vienes del mundo técnico, piensa en un agente como un asistente que no solo responde, sino que sigue un procedimiento. Tú le das una misión, una forma de trabajar y una manera de comprobar el resultado.</p>
+        </div>
+        <div class="grid-3">
+          <article class="card fade-up">
+            <p class="kicker">Idea simple</p>
+            <h3>Chatbot = respuesta</h3>
+            <p>Le haces una pregunta y te devuelve texto. Si quieres continuar, tienes que dirigirlo tú en cada paso.</p>
+          </article>
+          <article class="card fade-up">
+            <p class="kicker">Idea útil</p>
+            <h3>Agente = procedimiento</h3>
+            <p>Le das un trabajo completo, por ejemplo investigar algo, ordenar datos o redactar una salida concreta, y sigue un método para llegar al resultado.</p>
+          </article>
+          <article class="card fade-up">
+            <p class="kicker">Traducción práctica</p>
+            <h3>No necesitas programar</h3>
+            <p>Lo importante no es saber código, sino saber pedir bien: qué quieres, con qué datos, qué límites hay y cómo debe verse la respuesta final.</p>
+          </article>
+        </div>
+        <div class="note fade-up" style="margin-top: var(--space-6);">
+          <p class="kicker">Atajo mental</p>
+          <p>Una forma fácil de entenderlo es esta: un agente es una checklist escrita para que una IA la ejecute. Si esa checklist es clara, la IA funciona mejor; si es difusa, fallará aunque el modelo sea muy bueno.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="que-es">
+      <div class="container">
+        <div class="section-intro fade-up">
+          <div>
+            <p class="kicker">Fundamento</p>
+            <h2>Un agente no es un chatbot</h2>
+          </div>
+          <p>La idea central del artículo es que no necesitas saber programar para crear un agente útil. Lo que sí necesitas es definir con claridad un objetivo, los pasos, las herramientas y el criterio de salida.</p>
+        </div>
+        <div class="grid-3">
+          <article class="card fade-up">
+            <p class="kicker">Chatbot</p>
+            <h3>Responde</h3>
+            <p>Es reactivo: recibe una pregunta, devuelve una respuesta y espera la siguiente instrucción. Tú haces la coordinación manual entre un paso y otro.</p>
+          </article>
+          <article class="card fade-up">
+            <p class="kicker">Agente</p>
+            <h3>Opera</h3>
+            <p>Recibe un objetivo, propone un plan, usa herramientas, comprueba su trabajo y continúa hasta completar una entrega final.</p>
+          </article>
+          <article class="card fade-up">
+            <p class="kicker">Diferencia clave</p>
+            <h3>Autonomía</h3>
+            <p>El valor del agente está en el bucle: ejecutar, revisar, corregir y seguir. Esa continuidad es lo que lo convierte en un sistema de trabajo y no solo en una respuesta textual.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="flujo-title">
+      <div class="container">
+        <div class="section-intro fade-up">
+          <div>
+            <p class="kicker">Diagrama de flujo</p>
+            <h2 id="flujo-title">Cómo funciona un agente real</h2>
+          </div>
+          <p>Siguiendo el enfoque de HTML explicativo e interactivo, este flujo resume los cuatro componentes descritos en el artículo: objetivo, plan, herramientas y bucle de verificación.</p>
+        </div>
+        <div class="process-flow card fade-up">
+          <svg class="flow-svg" viewBox="0 0 960 360" role="img" aria-label="Diagrama de flujo del funcionamiento de un agente de IA">
+            <defs>
+              <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 z" fill="currentColor"></path>
+              </marker>
+            </defs>
+            <g color="var(--color-primary)">
+              <line x1="170" y1="110" x2="310" y2="110" stroke="currentColor" stroke-width="2.5" marker-end="url(#arrow)"/>
+              <line x1="450" y1="110" x2="590" y2="110" stroke="currentColor" stroke-width="2.5" marker-end="url(#arrow)"/>
+              <line x1="730" y1="110" x2="860" y2="110" stroke="currentColor" stroke-width="2.5" marker-end="url(#arrow)"/>
+              <path d="M860 126 C860 250, 170 250, 170 126" fill="none" stroke="currentColor" stroke-width="2.5" stroke-dasharray="8 8" marker-end="url(#arrow)"/>
+            </g>
+            <rect class="flow-node primary" x="30" y="70" width="140" height="80" rx="18"></rect>
+            <text class="flow-text" x="100" y="102" text-anchor="middle">1. Objetivo claro</text>
+            <text class="flow-sub" x="100" y="122" text-anchor="middle">Qué debe lograr</text>
+            <rect class="flow-node" x="310" y="70" width="140" height="80" rx="18"></rect>
+            <text class="flow-text" x="380" y="102" text-anchor="middle">2. Plan</text>
+            <text class="flow-sub" x="380" y="122" text-anchor="middle">Pasos numerados</text>
+            <rect class="flow-node" x="590" y="70" width="140" height="80" rx="18"></rect>
+            <text class="flow-text" x="660" y="102" text-anchor="middle">3. Herramientas</text>
+            <text class="flow-sub" x="660" y="122" text-anchor="middle">Web, archivos, cálculos</text>
+            <rect class="flow-node primary" x="860" y="70" width="70" height="80" rx="18"></rect>
+            <text class="flow-text" x="895" y="96" text-anchor="middle">4.</text>
+            <text class="flow-text" x="895" y="116" text-anchor="middle">Bucle</text>
+            <text class="flow-sub" x="895" y="136" text-anchor="middle">revisar</text>
+            <rect class="flow-node" x="250" y="250" width="460" height="72" rx="18"></rect>
+            <text class="flow-text" x="480" y="282" text-anchor="middle">Ejecutar → comprobar resultado → decidir siguiente paso → repetir hasta completar</text>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <section id="plan">
+      <div class="container">
+        <div class="section-intro fade-up">
+          <div>
+            <p class="kicker">Plan de trabajo</p>
+            <h2>El itinerario completo del fin de semana</h2>
+          </div>
+          <p>El artículo estructura el aprendizaje en cuatro bloques: entender, construir, depurar y escalar. Ese orden importa porque evita intentar “automatizar” antes de definir bien el trabajo.</p>
+        </div>
+        <div class="timeline">
+          <article class="timeline-item fade-up">
+            <div class="timeline-day">Sábado · mañana</div>
+            <div>
+              <h3>Entender qué es un agente</h3>
+              <p>Repasa la diferencia entre chatbot y agente hasta poder explicarla. Después anota tres tareas tuyas que hoy haces de forma manual y que tengan varios pasos.</p>
+            </div>
+          </article>
+          <article class="timeline-item fade-up">
+            <div class="timeline-day">Sábado · tarde</div>
+            <div>
+              <h3>Construir el primer agente</h3>
+              <p>Elige la tarea más simple, redacta un blueprint de una página y ejecútalo en Claude Cowork o Claude Projects. La primera ejecución sirve para observar, no para perfeccionar.</p>
+            </div>
+          </article>
+          <article class="timeline-item fade-up">
+            <div class="timeline-day">Domingo · mañana</div>
+            <div>
+              <h3>Depurar y refinar</h3>
+              <p>Compara el resultado con tu objetivo real, detecta dónde faltó precisión y mejora las instrucciones. El artículo afirma que la mayoría de primeros agentes arrancan al 60–70 % y mejoran con tres o cuatro iteraciones.</p>
+            </div>
+          </article>
+          <article class="timeline-item fade-up">
+            <div class="timeline-day">Domingo · tarde</div>
+            <div>
+              <h3>Construir el segundo agente</h3>
+              <p>Con la experiencia del primero, el segundo blueprint debería salir más rápido y con mejor tasa de acierto inicial. Ahí empieza a aparecer un sistema, no una prueba aislada.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="blueprint">
+      <div class="container">
+        <div class="section-intro fade-up">
+          <div>
+            <p class="kicker">Pieza crítica</p>
+            <h2>El blueprint que convierte una idea en sistema</h2>
+          </div>
+          <p>Según el texto original, el verdadero agente no es la interfaz sino el blueprint. Es el documento que define lo que debe pasar, cómo debe pasar y qué hacer si algo sale mal.</p>
+        </div>
+        <div class="blueprint grid-2">
+          <div class="blueprint-item fade-up"><strong>1. Objetivo</strong><span>Una sola frase, específica y medible. Ejemplo: investigar los 10 newsletters de IA más relevantes y ordenarlos por suscriptores, frecuencia y cobertura temática.</span></div>
+          <div class="blueprint-item fade-up"><strong>2. Pasos</strong><span>Lista numerada y secuencial. Cuanto menos tenga que improvisar el modelo, más predecible será el resultado.</span></div>
+          <div class="blueprint-item fade-up"><strong>3. Herramientas</strong><span>Indica si necesita búsqueda web, lectura de archivos, escritura, hojas de cálculo, APIs o clasificación de información.</span></div>
+          <div class="blueprint-item fade-up"><strong>4. Salida esperada</strong><span>Describe el entregable exacto: tabla, resumen, documento Markdown, briefing ejecutivo, listado priorizado, etc.</span></div>
+          <div class="blueprint-item fade-up"><strong>5. Fallback</strong><span>Define cómo actuar ante datos faltantes o incertidumbre. Mejor “dato no disponible” que inventar una cifra.</span></div>
+          <div class="blueprint-item fade-up"><strong>6. Criterio de calidad</strong><span>Añade criterios explícitos para saber cuándo el trabajo está bien hecho: cobertura mínima, formato uniforme, fuentes verificadas y ausencia de suposiciones.</span></div>
+        </div>
+        <div class="note fade-up" style="margin-top: var(--space-6);">
+          <p class="kicker">Plantilla reutilizable</p>
+          <div class="code-block">Objetivo:
+[Describe aquí el resultado exacto que debe producir el agente]
+
+Pasos:
+1. [Paso 1]
+2. [Paso 2]
+3. [Paso 3]
+
+Herramientas permitidas:
+- [Web]
+- [Archivos]
+- [Cálculo]
+
+Formato de salida:
+- [Tabla, informe, resumen, checklist...]
+
+Reglas de calidad:
+- No asumir datos inexistentes
+- Señalar vacíos de información
+- Mantener estructura uniforme
+
+Si se atasca:
+- [Regla de fallback]</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="iteracion">
+      <div class="container">
+        <div class="section-intro fade-up">
+          <div>
+            <p class="kicker">Bucle de mejora</p>
+            <h2>Por qué la primera ejecución nunca es la última</h2>
+          </div>
+          <p>El artículo insiste en que un mal primer resultado no significa que los agentes fallen, sino que las instrucciones aún no son suficientemente precisas. La depuración consiste en convertir cada error en una mejora concreta del blueprint.</p>
+        </div>
+        <div class="steps grid-2">
+          <article class="step fade-up">
+            <div class="step-number">1</div>
+            <h3>Ejecuta</h3>
+            <p>Lanza el agente con el blueprint inicial y guarda la salida tal como viene. No corrijas sobre la marcha.</p>
+          </article>
+          <article class="step fade-up">
+            <div class="step-number">2</div>
+            <h3>Revisa</h3>
+            <p>Compara el resultado con lo que realmente querías obtener. Enumera los errores, omisiones, ambigüedades y supuestos incorrectos.</p>
+          </article>
+          <article class="step fade-up">
+            <div class="step-number">3</div>
+            <h3>Traza la causa</h3>
+            <p>Pregúntate si el blueprint explicaba con claridad ese punto. En la mayoría de casos, la respuesta será no.</p>
+          </article>
+          <article class="step fade-up">
+            <div class="step-number">4</div>
+            <h3>Refina</h3>
+            <p>Haz el objetivo más concreto, añade pasos faltantes, fija criterios de calidad y define qué hacer en casos límite.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="ejemplos">
+      <div class="container">
+        <div class="section-intro fade-up">
+          <div>
+            <p class="kicker">Casos de uso</p>
+            <h2>Qué agentes propone empezar a construir</h2>
+          </div>
+          <p>El texto original recomienda comenzar con tareas recurrentes y suficientemente estructuradas. Estos ejemplos encajan bien porque tienen objetivo claro, datos observables y una salida fácil de validar.</p>
+        </div>
+        <div class="comparison fade-up">
+          <table>
+            <thead>
+              <tr>
+                <th>Agente</th>
+                <th>Entrada</th>
+                <th>Salida útil</th>
+                <th>Valor práctico</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Research</td>
+                <td>Un tema o una lista de competidores</td>
+                <td>Brief estructurado con hallazgos, fuentes y próximos pasos</td>
+                <td>Reduce horas de búsqueda manual y unifica el formato</td>
+              </tr>
+              <tr>
+                <td>Reutilización de contenido</td>
+                <td>Un artículo largo o una pieza original</td>
+                <td>Posts para X, LinkedIn y newsletter con una voz consistente</td>
+                <td>Convierte una pieza larga en múltiples activos</td>
+              </tr>
+              <tr>
+                <td>Preparación de reuniones</td>
+                <td>Nombre de persona y empresa</td>
+                <td>Ficha con trayectoria, actividad reciente y talking points</td>
+                <td>Acorta la preparación previa a reuniones clave</td>
+              </tr>
+              <tr>
+                <td>Monitorización de competidores</td>
+                <td>Lista de competidores</td>
+                <td>Resumen semanal de cambios, anuncios y precios</td>
+                <td>Permite seguimiento continuo sin revisión manual diaria</td>
+              </tr>
+              <tr>
+                <td>Borrador de emails</td>
+                <td>Lote de correos entrantes</td>
+                <td>Respuestas agrupadas por prioridad y tono</td>
+                <td>Agiliza la primera versión de respuestas repetitivas</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="grid-3" style="margin-top: var(--space-6);">
+          <article class="example-card card fade-up">
+            <p class="kicker">Consejo</p>
+            <h3>Empieza por lo simple</h3>
+            <p>Tu primer agente no debe ser el más ambicioso, sino el más fácil de validar. Lo importante es dominar el ciclo blueprint → ejecución → revisión.</p>
+          </article>
+          <article class="example-card card fade-up">
+            <p class="kicker">Evita</p>
+            <h3>No delegues la claridad</h3>
+            <p>Si una instrucción puede interpretarse de varias formas, el agente elegirá una de ellas. La ambigüedad casi siempre vuelve en forma de errores.</p>
+          </article>
+          <article class="example-card card fade-up">
+            <p class="kicker">Escalado</p>
+            <h3>Dos agentes ya forman un sistema</h3>
+            <p>El artículo remata que tener un segundo agente cambia la mentalidad: de experimento puntual a infraestructura operativa personal o de negocio.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="practica">
+      <div class="container">
+        <div class="section-intro fade-up">
+          <div>
+            <p class="kicker">Guía técnica</p>
+            <h2>Cómo construir agentes reales con cualquier IA</h2>
+          </div>
+          <p>Esta ampliación baja del nivel conceptual al operativo. Está pensada para usar servicios cerrados como Claude, ChatGPT o Gemini, pero también para montarlo con modelos locales en Ollama, llama.cpp, Open WebUI o cualquier frontend que permita copiar instrucciones, iterar y revisar salidas.</p>
+        </div>
+        <div class="grid-3">
+          <article class="card fade-up">
+            <p class="kicker">Principio 1</p>
+            <h3>Un agente es un protocolo</h3>
+            <p>No depende de una marca concreta. Si una IA puede recibir instrucciones largas, analizar entradas, producir una salida estructurada y aceptar una segunda ronda de corrección, ya puedes simular un agente útil.</p>
+          </article>
+          <article class="card fade-up">
+            <p class="kicker">Principio 2</p>
+            <h3>La herramienta puede ser manual</h3>
+            <p>Incluso sin integraciones automáticas, puedes construir agentes semi-manuales: tú pegas contexto, el modelo ejecuta el procedimiento y tú validas la salida. Eso ya resuelve trabajo real.</p>
+          </article>
+          <article class="card fade-up">
+            <p class="kicker">Principio 3</p>
+            <h3>Lo importante es el formato</h3>
+            <p>Cuanto más rígida sea la estructura de entrada y salida, más repetible será el comportamiento entre diferentes modelos, incluidos los locales.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="stack-tecnico">
+      <div class="container">
+        <div class="section-intro fade-up">
+          <div>
+            <p class="kicker">Compatibilidad</p>
+            <h2>Qué necesitas en la práctica</h2>
+          </div>
+          <p>No hace falta empezar con APIs, funciones ni MCP. Para una primera versión funcional basta con un modelo razonable, una interfaz donde pegar instrucciones largas y una forma de revisar resultados con disciplina.</p>
+        </div>
+        <div class="comparison fade-up">
+          <table>
+            <thead>
+              <tr>
+                <th>Escenario</th>
+                <th>Qué usar</th>
+                <th>Ventaja</th>
+                <th>Límite inicial</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>IA en la nube</td>
+                <td>Claude, ChatGPT, Gemini, Perplexity, etc.</td>
+                <td>Mejor razonamiento y menos fricción al principio</td>
+                <td>Coste, privacidad y dependencia del proveedor</td>
+              </tr>
+              <tr>
+                <td>IA local sencilla</td>
+                <td>Ollama + Open WebUI, LM Studio, llama.cpp</td>
+                <td>Control total sobre datos y entorno</td>
+                <td>Más sensible a prompts vagos y contexto largo</td>
+              </tr>
+              <tr>
+                <td>Flujo híbrido</td>
+                <td>Modelo local para borradores + modelo cloud para validación</td>
+                <td>Buen equilibrio entre coste, privacidad y calidad</td>
+                <td>Exige definir bien qué fase hace cada sistema</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="note fade-up" style="margin-top: var(--space-6);">
+          <p class="kicker">Regla operativa</p>
+          <p>Si tu modelo local es menos capaz, compénsalo con prompts más estructurados, menos ambigüedad, ejemplos concretos y salidas extremadamente definidas. La calidad del procedimiento pesa más cuando el modelo es pequeño.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="arquitectura-real">
+      <div class="container">
+        <div class="section-intro fade-up">
+          <div>
+            <p class="kicker">Arquitectura mínima</p>
+            <h2>El patrón base de un agente usable</h2>
+          </div>
+          <p>Antes de automatizar, monta este circuito mínimo. Es suficientemente simple para usarlo a mano y suficientemente sólido para convertirlo después en scripts, nodos o herramientas conectadas por API.</p>
+        </div>
+        <div class="steps grid-2">
+          <article class="step fade-up">
+            <div class="step-number">1</div>
+            <h3>Entrada normalizada</h3>
+            <p>Todo empieza con una plantilla fija: objetivo, contexto, restricciones, fuentes disponibles y formato de salida. Nunca trabajes con peticiones caóticas si quieres repetibilidad.</p>
+          </article>
+          <article class="step fade-up">
+            <div class="step-number">2</div>
+            <h3>Instrucción del sistema</h3>
+            <p>Define el rol, el método de trabajo y las reglas de calidad en un bloque estable que reutilizarás siempre. Ese bloque es tu núcleo operativo.</p>
+          </article>
+          <article class="step fade-up">
+            <div class="step-number">3</div>
+            <h3>Ejecutor</h3>
+            <p>La IA produce una primera salida siguiendo la plantilla. Puede ser manual, por chat, por API o desde una instancia local.</p>
+          </article>
+          <article class="step fade-up">
+            <div class="step-number">4</div>
+            <h3>Validador</h3>
+            <p>La misma IA o una segunda ejecución revisa si faltan datos, si hay suposiciones y si se respetó el formato. Sin validación, no hay agente fiable.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="prompts-reales">
+      <div class="container">
+        <div class="section-intro fade-up">
+          <div>
+            <p class="kicker">Prompts reales</p>
+            <h2>Bloques reutilizables para construir agentes</h2>
+          </div>
+          <p>Estos ejemplos no son teoría abstracta. Están redactados para copiarlos, adaptarlos y usarlos con casi cualquier modelo. La clave es separar siempre instrucción permanente, entrada del trabajo y plantilla de salida.</p>
+        </div>
+        <div class="grid-2">
+          <div class="card fade-up">
+            <p class="kicker">Prompt base</p>
+            <h3>System prompt universal</h3>
+            <div class="code-block">Actúa como un agente de trabajo orientado a completar tareas de forma estructurada.
+
+Tu comportamiento debe seguir estas reglas:
+1. Primero resume el objetivo en una línea.
+2. Después crea un plan breve de ejecución.
+3. Ejecuta el trabajo paso a paso.
+4. No inventes datos; si falta información, indícalo de forma explícita.
+5. Mantén un formato claro y estable.
+6. Termina con una sección llamada "Validación" donde indiques posibles huecos, riesgos o dudas.
+
+Prioridad máxima:
+- precisión antes que velocidad
+- estructura antes que creatividad
+- transparencia antes que suposición</div>
+          </div>
+          <div class="card fade-up">
+            <p class="kicker">Plantilla de tarea</p>
+            <h3>Input normalizado</h3>
+            <div class="code-block">TAREA:
+[qué quieres conseguir]
+
+CONTEXTO:
+[empresa, proyecto, público, situación]
+
+DATOS DISPONIBLES:
+[fuentes, enlaces, notas, documentos]
+
+RESTRICCIONES:
+[tiempo, tono, longitud, idioma, no usar suposiciones]
+
+FORMATO DE SALIDA:
+[tabla, checklist, briefing, JSON, markdown]
+
+CRITERIO DE ÉXITO:
+[qué debe cumplir la respuesta para darse por válida]</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="agentes-ejemplo">
+      <div class="container">
+        <div class="section-intro fade-up">
+          <div>
+            <p class="kicker">Implementación</p>
+            <h2>Tres agentes que puedes desplegar hoy</h2>
+          </div>
+          <p>Los siguientes ejemplos están pensados para trabajo real y pueden ejecutarse con una IA comercial o local. Empiezan en modo manual, pero ya dejan lista la lógica para futura automatización.</p>
+        </div>
+        <div class="steps">
+          <article class="step fade-up">
+            <div class="step-number">A</div>
+            <h3>Agente de research técnico</h3>
+            <p>Ideal para comparar herramientas, modelos, proveedores o stacks.</p>
+            <div class="code-block">SYSTEM:
+Actúa como analista técnico. Tu trabajo es investigar y resumir información verificable sin inventar datos.
+Debes organizar la salida en: resumen ejecutivo, hallazgos, tabla comparativa, riesgos y preguntas abiertas.
+
+USER:
+TAREA:
+Investigar las mejores opciones para desplegar un modelo local de 7B para uso interno.
+
+CONTEXTO:
+Busco equilibrio entre privacidad, coste y facilidad de mantenimiento.
+
+DATOS DISPONIBLES:
+- Ollama
+- llama.cpp
+- Open WebUI
+- LM Studio
+
+RESTRICCIONES:
+- responder en español
+- no asumir benchmarks no citados
+- distinguir entre uso personal y despliegue interno de equipo
+
+FORMATO DE SALIDA:
+1. resumen ejecutivo
+2. tabla comparativa
+3. recomendación por escenarios
+4. validación final</div>
+          </article>
+          <article class="step fade-up">
+            <div class="step-number">B</div>
+            <h3>Agente de clasificación de correos o tickets</h3>
+            <p>Útil para soporte, operaciones o bandejas saturadas.</p>
+            <div class="code-block">SYSTEM:
+Actúa como triage assistant. Clasifica entradas por prioridad, intención, urgencia y acción recomendada.
+No redactes respuestas largas si no se te pide; primero organiza.
+
+USER:
+TAREA:
+Clasificar este lote de mensajes.
+
+CONTEXTO:
+Se trata de un buzón de soporte técnico.
+
+DATOS DISPONIBLES:
+[Pegar aquí 10-20 correos o tickets]
+
+RESTRICCIONES:
+- no borrar información original
+- marcar posibles incidencias críticas
+- usar prioridad: crítica, alta, media, baja
+
+FORMATO DE SALIDA:
+Tabla con columnas: ID, resumen, prioridad, categoría, acción siguiente, necesita humano (sí/no)</div>
+          </article>
+          <article class="step fade-up">
+            <div class="step-number">C</div>
+            <h3>Agente de reutilización de contenido</h3>
+            <p>Convierte una pieza larga en múltiples salidas manteniendo una voz consistente.</p>
+            <div class="code-block">SYSTEM:
+Actúa como editor multiformato. Debes transformar una pieza fuente en varias salidas sin perder el mensaje central.
+Mantén el tono profesional, evita relleno y no repitas frases literales salvo nombres propios o datos.
+
+USER:
+TAREA:
+Convertir este artículo en 3 posts para X, 1 post para LinkedIn y 1 resumen para newsletter.
+
+CONTEXTO:
+Audiencia técnica interesada en agentes de IA y automatización.
+
+DATOS DISPONIBLES:
+[Pegar artículo o notas]
+
+RESTRICCIONES:
+- español
+- tono claro y directo
+- cada formato debe sentirse nativo
+
+FORMATO DE SALIDA:
+Sección 1: X
+Sección 2: LinkedIn
+Sección 3: Newsletter
+Sección 4: Validación de coherencia</div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="metodo-local">
+      <div class="container">
+        <div class="section-intro fade-up">
+          <div>
+            <p class="kicker">Modelos locales</p>
+            <h2>Cómo adaptarlo cuando trabajas en local</h2>
+          </div>
+          <p>Los modelos locales suelen agradecer tareas más atomizadas. Si el modelo es pequeño o el contexto es limitado, divide el agente en fases cortas en lugar de pedirle un proceso complejo de una sola vez.</p>
+        </div>
+        <div class="grid-2">
+          <article class="card fade-up">
+            <p class="kicker">Patrón recomendado</p>
+            <h3>Cadena de dos o tres pasos</h3>
+            <p>Primero clasificación, luego expansión, después validación. Este patrón funciona mejor que pedir directamente una salida perfecta y larga en un único prompt.</p>
+            <div class="code-block">Paso 1: extrae hechos y ordénalos.
+Paso 2: genera el entregable usando solo esos hechos.
+Paso 3: revisa si el entregable contiene afirmaciones no soportadas.</div>
+          </article>
+          <article class="card fade-up">
+            <p class="kicker">Buenas prácticas</p>
+            <h3>Qué mejora mucho el rendimiento</h3>
+            <p>Usa instrucciones breves pero rígidas, ejemplos de salida, campos obligatorios y longitud limitada. En local suele funcionar mejor “haz exactamente esto” que “razona libremente y decide”.</p>
+            <div class="code-block">Devuelve solo este formato:
+- objetivo
+- hechos confirmados
+- salida final
+- dudas o vacíos
+
+Si falta información, escribe literalmente: DATO NO DISPONIBLE.</div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="checklist-produccion">
+      <div class="container">
+        <div class="section-intro fade-up">
+          <div>
+            <p class="kicker">Paso a producción</p>
+            <h2>Checklist para pasar de demo a agente útil</h2>
+          </div>
+          <p>Un agente solo empieza a ser real cuando produce salidas útiles con consistencia. Esta checklist sirve como filtro antes de darlo por bueno.</p>
+        </div>
+        <div class="grid-3">
+          <article class="card fade-up">
+            <p class="kicker">Entrada</p>
+            <h3>Normalizada</h3>
+            <p>La tarea llega siempre con la misma estructura y el mismo nivel mínimo de contexto.</p>
+          </article>
+          <article class="card fade-up">
+            <p class="kicker">Salida</p>
+            <h3>Validable</h3>
+            <p>Puedes revisar rápido si cumple o no. Si no sabes evaluarla, el agente aún está verde.</p>
+          </article>
+          <article class="card fade-up">
+            <p class="kicker">Errores</p>
+            <h3>Explícitos</h3>
+            <p>Cuando faltan datos, el agente lo indica en lugar de inventar. Ese comportamiento vale oro.</p>
+          </article>
+          <article class="card fade-up">
+            <p class="kicker">Iteración</p>
+            <h3>Documentada</h3>
+            <p>Cada fallo se convierte en una regla nueva o una mejora del prompt, no en una improvisación puntual.</p>
+          </article>
+          <article class="card fade-up">
+            <p class="kicker">Portabilidad</p>
+            <h3>Independiente del proveedor</h3>
+            <p>El núcleo del agente está en tus plantillas y no en una función propietaria difícil de migrar.</p>
+          </article>
+          <article class="card fade-up">
+            <p class="kicker">Evolución</p>
+            <h3>Listo para automatizar</h3>
+            <p>Si el flujo ya funciona manualmente, después podrás conectarlo a scripts, APIs o pipelines sin rehacer la lógica.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <h2 style="font-size: var(--text-xl); margin-bottom: var(--space-3);">Fuentes y créditos</h2>
+      <div class="grid-2">
+        <div class="note">
+          <p class="kicker">Fuentes citadas</p>
+          <p><strong>Khairallah AL-Awady</strong>. Artículo en X: <em>How to Build Your First AI Agent With Zero Coding Experience (Full Course)</em>.</p>
+          <p><strong>Thariq Shihipar</strong>. Recurso de referencia: <em>The unreasonable effectiveness of HTML — examples</em>.</p>
+        </div>
+        <div class="note">
+          <p class="kicker">Créditos</p>
+          <p><strong>Web By BarzakZen</strong></p>
+          <p>Copyright 2026</p>
+          <p>Licencia Apache 2.0</p>
+        </div>
+      </div>
+      <p style="margin-top: var(--space-5);">Esta página está diseñada como un documento HTML autocontenido y navegable: combina explicación progresiva, bloques visuales, diagramas y plantillas reutilizables para que el contenido se entienda incluso sin conocimientos técnicos previos.</p>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      const root = document.documentElement;
+      const toggle = document.querySelector('[data-theme-toggle]');
+      let theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      root.setAttribute('data-theme', theme);
+      const icon = () => theme === 'dark'
+        ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>'
+        : '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+      if (toggle) {
+        toggle.innerHTML = icon();
+        toggle.addEventListener('click', function () {
+          theme = theme === 'dark' ? 'light' : 'dark';
+          root.setAttribute('data-theme', theme);
+          toggle.innerHTML = icon();
+        });
+      }
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) entry.target.classList.add('visible');
+        });
+      }, { threshold: 0.12 });
+      document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+    })();
+  </script>
+</body>
+</html>
